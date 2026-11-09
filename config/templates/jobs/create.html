@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Share an opportunity{% endblock %}
+{% block content %}
+<div class="form-page"><a class="back-link" href="{% url 'jobs' %}">← Back to jobs</a><section class="card form-panel"><span class="eyebrow">GREAT PEOPLE, GREAT WORK</span><h1>Share an opportunity.</h1><p class="muted">Help someone find a role where they can do their best work.</p><form method="post" class="form-stack">{% csrf_token %}{% for field in form %}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="field-error">{{ field.errors }}</div>{% endif %}{% endfor %}<div class="form-buttons"><button class="button button-primary" type="submit">Publish job</button><a class="button button-outline" href="{% url 'jobs' %}">Cancel</a></div></form></section></div>
+{% endblock %}

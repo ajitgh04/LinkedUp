@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="notifications-column">
+  <section class="card notifications-heading"><div><span class="eyebrow">A LITTLE GOOD NEWS</span><h1>You're in the loop.</h1><p>Here's what's happening in your community.</p></div><span class="notification-art">✳</span></section>
+  <section class="card notification-list"><div class="notification-list-heading"><div><h2>Recent activity</h2><p>Your latest updates, all in one place.</p></div><form method="post">{% csrf_token %}<button class="text-button" type="submit">Mark all as read</button></form></div>
+    {% for notification in notifications %}<a class="notification-item {% if not notification.read_at %}notification-unread{% endif %}" href="{{ notification.url|default:'#' }}"><span class="avatar avatar-tiny">{% if notification.actor.profile_picture %}<img src="{{ notification.actor.profile_picture.url }}" alt="">{% elif notification.actor %}{{ notification.actor.first_name|default:notification.actor.username|first|upper }}{% else %}✳{% endif %}</span><span class="notification-copy"><strong>{{ notification.message }}</strong><small>{{ notification.created_at|timesince }} ago</small></span><span class="notification-kind">{{ notification.kind|title }}</span></a>{% empty %}<div class="empty-state"><span class="empty-icon">✳</span><h2>All caught up.</h2><p>When something happens, you'll find it here.</p><a class="button button-outline button-small" href="{% url 'feed' %}">Back to your feed</a></div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

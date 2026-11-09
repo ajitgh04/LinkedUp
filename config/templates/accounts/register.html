@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Join LinkedUp{% endblock %}
+{% block auth_content %}
+<main class="auth-page">
+  <a class="brand auth-brand" href="{% url 'login' %}"><span class="brand-mark">in</span><span class="brand-word">Linked<span>Up</span></span></a>
+  <section class="auth-card register-card">
+    <span class="eyebrow">A GOOD MOVE FOR YOUR CAREER</span><h2>Find your people.</h2><p class="muted">Join a community built around your next opportunity.</p>
+    <form method="post" class="form-stack">{% csrf_token %}
+      {% for field in form %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+        {% if field.help_text %}<div class="field-help">{{ field.help_text|safe }}</div>{% endif %}
+        {% if field.errors %}<div class="field-error">{{ field.errors }}</div>{% endif %}
+      {% endfor %}
+      <button class="button button-primary button-wide" type="submit">Agree &amp; join</button>
+    </form>
+    <p class="auth-terms">By clicking Agree &amp; join, you agree to LinkedUp's <a href="#">User Agreement</a> and <a href="#">Privacy Policy</a>.</p>
+    <p class="auth-switch">Already on LinkedUp? <a href="{% url 'login' %}">Sign in</a></p>
+  </section>
+</main>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Find your next role{% endblock %}
+{% block content %}
+<div class="jobs-column">
+  <section class="card jobs-hero"><div><span class="eyebrow">A NEW CHAPTER STARTS HERE</span><h1>Find work that<br><em>moves you forward.</em></h1><p>Explore opportunities shared by your community.</p></div><span class="jobs-hero-art">↗</span></section>
+  <section class="card jobs-intro"><div><h2>Opportunities for you</h2><p>Fresh openings, from teams doing great things.</p></div><a class="button button-outline button-small" href="{% url 'create-job' %}"><span>＋</span> Post a job</a></section>
+  {% for job in jobs %}<article class="card job-card"><div class="job-logo">{{ job.company|first|upper }}</div><div class="job-details"><a class="job-title" href="#job-{{ job.id }}">{{ job.title }}</a><p class="job-company">{{ job.company }}</p><p class="job-meta">{{ job.location }}{% if job.salary %} <span>·</span> {{ job.salary }}{% endif %}</p><p class="job-description" id="job-{{ job.id }}">{{ job.description|linebreaksbr }}</p><span class="job-time">{{ job.created_at|timesince }} ago</span></div><div class="job-action">{% if job.id in applied_ids %}<span class="applied-tag">✓ Applied</span>{% elif job.recruiter_id == user.id %}<span class="muted">Your listing</span>{% else %}<form method="post" enctype="multipart/form-data" action="{% url 'apply-job' job.id %}">{% csrf_token %}<label class="resume-label" for="resume-{{ job.id }}">Attach resume</label><input id="resume-{{ job.id }}" type="file" name="resume" accept=".pdf,.doc,.docx" required><button class="button button-primary button-small" type="submit">Apply now <span>→</span></button></form>{% endif %}</div></article>
+  {% empty %}<section class="card empty-state"><span class="empty-icon">↗</span><h2>Make the first move.</h2><p>There aren't any job listings yet. Share an opportunity with your community.</p><a class="button button-primary" href="{% url 'create-job' %}">Post a job</a></section>{% endfor %}
+</div>
+{% endblock %}

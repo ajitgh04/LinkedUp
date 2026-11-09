@@ -1,0 +1,86 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f6f8">
+  <title>{% block title %}Home{% endblock %} · LinkedUp</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{% url 'feed' %}" aria-label="LinkedUp home"><span class="brand-mark">in</span><span class="brand-word">Linked<span>Up</span></span></a>
+      <form class="search-form" action="{% url 'search' %}" method="get">
+        <span aria-hidden="true">⌕</span>
+        <input type="search" name="q" value="{{ request.GET.q }}" placeholder="Search people, jobs, posts" aria-label="Search">
+      </form>
+      {% if user.is_authenticated %}
+      <nav class="main-nav" aria-label="Main navigation">
+        <a class="{% if request.resolver_match.url_name == 'feed' %}active{% endif %}" href="{% url 'feed' %}"><span class="nav-icon">⌂</span><span>Home</span></a>
+        <a class="{% if request.resolver_match.url_name == 'connections' %}active{% endif %}" href="{% url 'connections' %}"><span class="nav-icon">♧</span><span>My network</span></a>
+        <a class="{% if request.resolver_match.url_name == 'jobs' or request.resolver_match.url_name == 'create-job' %}active{% endif %}" href="{% url 'jobs' %}"><span class="nav-icon">▣</span><span>Jobs</span></a>
+        <a class="{% if request.resolver_match.url_name == 'inbox' or request.resolver_match.url_name == 'conversation' %}active{% endif %}" href="{% url 'inbox' %}"><span class="nav-icon">▤</span><span>Messaging</span></a>
+        <a class="{% if request.resolver_match.url_name == 'notifications' %}active{% endif %}" href="{% url 'notifications' %}"><span class="nav-icon">♧{% if unread_notification_count %}<i class="nav-badge"></i>{% endif %}</span><span>Notifications</span></a>
+        <a class="{% if request.resolver_match.url_name == 'my-profile' %}active{% endif %}" href="{% url 'my-profile' %}"><span class="nav-avatar">{% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="">{% else %}{{ user.first_name|default:user.username|first|upper }}{% endif %}</span><span>Me</span></a>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit"><span class="nav-icon">↪</span><span>Sign out</span></button></form>
+      </nav>
+      {% endif %}
+    </div>
+  </header>
+  {% if user.is_authenticated %}
+  <div class="page-layout">
+    <aside class="left-rail">
+      <section class="card mini-profile">
+        <div class="cover cover-small"></div>
+        <a href="{% url 'my-profile' %}" class="avatar avatar-large">
+          {% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="{{ user.get_full_name }}">{% else %}{{ user.first_name|default:user.username|first|upper }}{% endif %}
+        </a>
+        <div class="mini-profile-body">
+          <a class="strong profile-name" href="{% url 'my-profile' %}">{{ user.get_full_name|default:user.username }}</a>
+          <p>{{ user.headline|default:"Add a headline to introduce yourself" }}</p>
+        </div>
+        <div class="mini-stats"><span>Grow your network</span><a href="{% url 'connections' %}">Find people <b>→</b></a></div>
+        <a class="premium-link" href="{% url 'my-profile' %}"><span class="premium-dot"></span> Make your profile stand out</a>
+        <a class="saved-link" href="{% url 'jobs' %}"><span>▣</span> Explore opportunities</a>
+      </section>
+      <section class="card side-links">
+        <a href="{% url 'connections' %}">Discover people <span>→</span></a>
+        <a href="{% url 'jobs' %}">Explore jobs <span>→</span></a>
+        <a href="{% url 'inbox' %}">Your messages <span>→</span></a>
+      </section>
+      <div class="left-footer">About &nbsp; Accessibility &nbsp; Help<br>Privacy &amp; Terms &nbsp; Ad choices<br><span>LinkedUp © 2025</span></div>
+    </aside>
+    <main class="main-content">
+      {% if messages %}<div class="flash-stack">{% for message in messages %}<div class="flash {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <aside class="right-rail">
+      <section class="card news-card">
+        <div class="section-title"><h3>LinkedUp news</h3><span class="info-dot">i</span></div>
+        <p class="eyebrow">TODAY'S TOP STORIES</p>
+        <a href="{% url 'search' %}?q=work">The future of work is looking more human<span>4h ago · 2,410 readers</span></a>
+        <a href="{% url 'search' %}?q=technology">The skills making a comeback in tech<span>6h ago · 1,283 readers</span></a>
+        <a href="{% url 'search' %}?q=career">A fresh take on career growth<span>8h ago · 986 readers</span></a>
+        <a href="{% url 'search' %}?q=design">Designing a better first week<span>1d ago · 721 readers</span></a>
+        <a class="more-news" href="{% url 'search' %}">Explore more stories <span>→</span></a>
+      </section>
+      <section class="card promo-card">
+        <span class="promo-label">YOUR NEXT CHAPTER</span>
+        <h3>Great work starts with a connection.</h3>
+        <p>Meet people who help you move forward.</p>
+        <a class="button button-outline button-small" href="{% url 'connections' %}">Find your people</a>
+      </section>
+      <div class="right-footer">About &nbsp; Accessibility &nbsp; Help Center<br>Privacy &amp; Terms &nbsp; Advertising &nbsp; Business<br>LinkedUp Corporation © 2025</div>
+    </aside>
+  </div>
+  {% else %}
+    {% if messages %}<div class="auth-flash">{% for message in messages %}<div class="flash {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% block auth_content %}{% endblock %}
+  {% endif %}
+</body>
+</html>

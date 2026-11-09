@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Messaging{% endblock %}
+{% block content %}
+<div class="messages-column">
+  <section class="card messages-heading"><div><span class="eyebrow">GOOD CONVERSATIONS GO PLACES</span><h1>Your messages</h1><p>Keep in touch with the people in your network.</p></div><span class="messages-art">✉</span></section>
+  <section class="card inbox-list"><div class="inbox-title"><h2>Recent conversations</h2><span>{{ threads|length }} conversation{{ threads|length|pluralize }}</span></div>
+    {% for item in threads %}<a class="inbox-item" href="{% url 'conversation' item.person.id %}"><span class="avatar">{% if item.person.profile_picture %}<img src="{{ item.person.profile_picture.url }}" alt="">{% else %}{{ item.person.first_name|default:item.person.username|first|upper }}{% endif %}</span><span class="inbox-summary"><strong>{{ item.person.get_full_name|default:item.person.username }}</strong><small>{{ item.person.headline|default:"LinkedUp member" }}</small><span>{% if item.last_message %}{{ item.last_message.content|truncatechars:82 }}{% else %}Start a conversation{% endif %}</span></span><span class="inbox-time">{% if item.last_message %}{{ item.last_message.created_at|timesince }} ago{% endif %}</span><span class="inbox-arrow">→</span></a>{% empty %}<div class="empty-state"><span class="empty-icon">✉</span><h2>Say hello to someone new.</h2><p>Your conversations will show up here once they get started.</p><a class="button button-primary" href="{% url 'connections' %}">Find someone to message</a></div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

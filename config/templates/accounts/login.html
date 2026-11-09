@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block auth_content %}
+<main class="auth-page">
+  <a class="brand auth-brand" href="{% url 'login' %}"><span class="brand-mark">in</span><span class="brand-word">Linked<span>Up</span></span></a>
+  <div class="auth-grid">
+    <div class="auth-intro"><span class="eyebrow">YOUR PROFESSIONAL COMMUNITY</span><h1>Make room for<br><em>what's next.</em></h1><p>Connect with people who inspire you, share what you know, and find your next opportunity.</p><div class="auth-illustration"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit-core">in</div><span class="orbit-person person-one">J</span><span class="orbit-person person-two">A</span><span class="orbit-person person-three">M</span><span class="orbit-person person-four">S</span></div></div>
+    <section class="auth-card">
+      <h2>Welcome back</h2><p class="muted">Pick up where you left off.</p>
+      <form method="post" class="form-stack">{% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+        <label for="{{ form.username.id_for_label }}">Email address</label>{{ form.username }}
+        {% if form.username.errors %}<div class="field-error">{{ form.username.errors }}</div>{% endif %}
+        <label for="{{ form.password.id_for_label }}">Password</label>{{ form.password }}
+        {% if form.password.errors %}<div class="field-error">{{ form.password.errors }}</div>{% endif %}
+        <button class="button button-primary button-wide" type="submit">Sign in</button>
+      </form>
+      <div class="auth-divider"><span>NEW TO LINKEDUP?</span></div>
+      <a class="button button-outline button-wide" href="{% url 'register' %}">Create an account</a>
+      <p class="auth-terms">By continuing, you agree to LinkedUp's <a href="#">User Agreement</a> and <a href="#">Privacy Policy</a>.</p>
+    </section>
+  </div>
+  <footer class="auth-footer">LinkedUp © 2025 <span>About</span><span>Accessibility</span><span>User Agreement</span><span>Privacy Policy</span></footer>
+</main>
+{% endblock %}

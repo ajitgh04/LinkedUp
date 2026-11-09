@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<div class="search-results-column">
+  <section class="card search-intro"><span class="eyebrow">FIND YOUR NEXT CONNECTION</span><h1>Good things start with a search.</h1><form action="{% url 'search' %}" method="get" class="results-search"><input type="search" name="q" value="{{ query }}" placeholder="Try a name, role, or company"><button class="button button-primary" type="submit">Search</button></form></section>
+  {% if query %}
+  <section class="card results-section"><div class="results-heading"><div><h2>People</h2><p>Meet someone new</p></div><a href="{% url 'connections' %}">My network →</a></div>
+    {% for person in people %}<a class="result-person" href="{% url 'profile' person.id %}"><span class="avatar">{% if person.profile_picture %}<img src="{{ person.profile_picture.url }}" alt="">{% else %}{{ person.first_name|default:person.username|first|upper }}{% endif %}</span><span><strong>{{ person.get_full_name|default:person.username }}</strong><small>{{ person.headline|default:"LinkedUp member" }}{% if person.location %} · {{ person.location }}{% endif %}</small></span><span class="result-arrow">→</span></a>{% empty %}<p class="muted result-empty">No people found for “{{ query }}”.</p>{% endfor %}
+  </section>
+  <section class="card results-section"><div class="results-heading"><div><h2>Jobs</h2><p>Explore new opportunities</p></div><a href="{% url 'jobs' %}">View all jobs →</a></div>
+    {% for job in jobs %}<a class="result-job" href="{% url 'jobs' %}"><span class="job-logo job-logo-small">{{ job.company|first|upper }}</span><span><strong>{{ job.title }}</strong><small>{{ job.company }} · {{ job.location }}</small></span><span class="result-arrow">→</span></a>{% empty %}<p class="muted result-empty">No job listings found for “{{ query }}”.</p>{% endfor %}
+  </section>
+  <section class="card results-section"><div class="results-heading"><div><h2>Posts</h2><p>Ideas from your community</p></div><a href="{% url 'feed' %}">Your feed →</a></div>
+    {% for post in posts %}<div class="result-post"><strong>{{ post.author.get_full_name|default:post.author.username }}</strong><small>{{ post.created_at|timesince }} ago</small><p>{{ post.content|truncatechars:220 }}</p></div>{% empty %}<p class="muted result-empty">No posts found for “{{ query }}”.</p>{% endfor %}
+  </section>
+  {% else %}<section class="card empty-state"><span class="empty-icon">⌕</span><h2>Curiosity looks good on you.</h2><p>Search for people, roles, companies, and ideas from your community.</p></section>{% endif %}
+</div>
+{% endblock %}

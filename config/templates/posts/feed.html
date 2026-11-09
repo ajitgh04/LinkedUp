@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Your feed{% endblock %}
+{% block content %}
+<div class="feed-column">
+  <section class="card composer">
+    <div class="composer-top">
+      <a class="avatar" href="{% url 'my-profile' %}">{% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="">{% else %}{{ user.first_name|default:user.username|first|upper }}{% endif %}</a>
+      <form class="composer-form" method="post" enctype="multipart/form-data">{% csrf_token %}<textarea name="content" placeholder="What would you like to share?" aria-label="Write a post" required></textarea><div class="composer-actions"><label class="composer-action upload-action"><span>▧</span> Photo<input type="file" name="image" accept="image/*"></label><button class="button button-primary button-small" type="submit">Post</button></div></form>
+    </div>
+  </section>
+  <div class="feed-sort"><span>YOUR COMMUNITY, IN THE MOMENT</span><div class="sort-line"></div><button type="button">Top <span>⌄</span></button></div>
+  {% for post in posts %}
+  <article class="card post-card">
+    <div class="post-header">
+      <a class="avatar" href="{% if post.author_id == user.id %}{% url 'my-profile' %}{% else %}{% url 'profile' post.author_id %}{% endif %}">{% if post.author.profile_picture %}<img src="{{ post.author.profile_picture.url }}" alt="">{% else %}{{ post.author.first_name|default:post.author.username|first|upper }}{% endif %}</a>
+      <div class="post-author"><a class="strong" href="{% if post.author_id == user.id %}{% url 'my-profile' %}{% else %}{% url 'profile' post.author_id %}{% endif %}">{{ post.author.get_full_name|default:post.author.username }}</a><span>{{ post.author.headline|default:"LinkedUp member" }}</span><span>{{ post.created_at|timesince }} ago · <span class="globe">◎</span></span></div>
+      {% if post.author_id != user.id %}<a class="icon-more" href="{% url 'profile' post.author_id %}" aria-label="View profile">···</a>{% endif %}
+    </div>
+    <div class="post-copy">{{ post.content|linebreaksbr }}</div>
+    {% if post.image %}<img class="post-image" src="{{ post.image.url }}" alt="Image shared by {{ post.author.get_full_name }}">{% endif %}
+    <div class="post-metrics"><span>{% if post.like_count %}<span class="reaction-dot">♥</span> {{ post.like_count }}{% endif %}</span><span>{{ post.comment_count }} comment{{ post.comment_count|pluralize }}</span></div>
+    <div class="post-actions">
+      <form method="post" action="{% url 'toggle-like' post.id %}">{% csrf_token %}<button class="post-action {% if post.viewer_liked %}liked{% endif %}" type="submit"><span>♡</span>{% if post.viewer_liked %}Liked{% else %}Like{% endif %}</button></form>
+      <button class="post-action" type="button" onclick="document.getElementById('comment-{{ post.id }}').focus()"><span>▤</span> Comment</button>
+      {% if post.author_id != user.id %}<a class="post-action" href="{% url 'conversation' post.author_id %}"><span>↗</span> Message</a>{% endif %}
+    </div>
+    {% for comment in post.comments.all %}<div class="comment"><a class="avatar avatar-tiny" href="{% if comment.user_id == user.id %}{% url 'my-profile' %}{% else %}{% url 'profile' comment.user_id %}{% endif %}">{% if comment.user.profile_picture %}<img src="{{ comment.user.profile_picture.url }}" alt="">{% else %}{{ comment.user.first_name|default:comment.user.username|first|upper }}{% endif %}</a><div class="comment-body"><strong>{{ comment.user.get_full_name|default:comment.user.username }}</strong><p>{{ comment.content|linebreaksbr }}</p><small>{{ comment.created_at|timesince }} ago</small></div></div>{% endfor %}
+    <form class="comment-form" method="post" action="{% url 'add-comment' post.id %}">{% csrf_token %}<a class="avatar avatar-tiny" href="{% url 'my-profile' %}">{% if user.profile_picture %}<img src="{{ user.profile_picture.url }}" alt="">{% else %}{{ user.first_name|default:user.username|first|upper }}{% endif %}</a><input id="comment-{{ post.id }}" name="content" placeholder="Add a comment..." required><button type="submit" class="comment-submit">Post</button></form>
+  </article>
+  {% empty %}
+  <section class="card empty-state"><span class="empty-icon">✳</span><h2>Your feed is a blank canvas.</h2><p>Share an idea or connect with someone new to get the conversation started.</p><a class="button button-primary" href="{% url 'connections' %}">Meet your community</a></section>
+  {% endfor %}
+</div>
+{% endblock %}
