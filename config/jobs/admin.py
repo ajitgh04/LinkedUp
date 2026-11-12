@@ -2,6 +2,10 @@ from django.contrib import admin
 
 from .models import Job, JobApplication
 
+admin.site.site_title = "LinkedIn Clone Admin"
+admin.site.site_header = "LinkedIn Clone Admin"
+admin.site.index_title = "Admin Dashboard"
+
 
 @admin.register(Job)
 class JobAdmin(admin.ModelAdmin):

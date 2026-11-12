@@ -25,7 +25,6 @@ class JobApplication(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-    resume = models.FileField(upload_to="resumes/")
     applied_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=30,

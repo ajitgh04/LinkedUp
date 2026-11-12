@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Applicants · {{ job.title }}{% endblock %}
+{% block content %}
+<div class="jobs-column">
+  <a class="back-link" href="{% url 'jobs' %}">← Back to jobs</a>
+  <section class="card jobs-intro"><div><h1>Applicants</h1><p>{{ job.title }} · {{ job.company }}</p></div></section>
+  {% for application in applications %}
+    <article class="card job-card">
+      <div class="job-logo">{% if application.applicant.first_name %}{{ application.applicant.first_name|first|upper }}{% else %}{{ application.applicant.username|first|upper }}{% endif %}</div>
+      <div class="job-details">
+        <a class="job-title" href="{% url 'profile' application.applicant_id %}">{{ application.applicant.get_full_name|default:application.applicant.username }}</a>
+        {% if application.applicant.headline %}<p class="job-company">{{ application.applicant.headline }}</p>{% endif %}
+        <p class="job-meta">Applied {{ application.applied_at|date:"M j, Y" }} · {{ application.status|title }}</p>
+      </div>
+      <div class="job-action">
+        {% if application.applicant.resume %}
+          <a class="button button-outline button-small" href="{% url 'applicant-resume' application.id %}" target="_blank" rel="noopener">View CV / resume</a>
+        {% else %}
+          <span class="muted">No CV provided</span>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <section class="card empty-state"><h2>No applicants yet</h2><p>Applications for this job will appear here.</p></section>
+  {% endfor %}
+</div>
+{% endblock %}

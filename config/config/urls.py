@@ -25,6 +25,7 @@ from messaging import views as messaging_views
 from notifications import views as notification_views
 from posts import views as post_views
 from profiles import views as profile_views
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,11 +42,20 @@ urlpatterns = [
     path("jobs/", job_views.job_list, name="jobs"),
     path("jobs/create/", job_views.create_job, name="create-job"),
     path("jobs/<int:job_id>/apply/", job_views.apply_to_job, name="apply-job"),
+    path("jobs/my-applications/", job_views.my_applications, name="my-applications"),
+    path("jobs/<int:job_id>/applicants/", job_views.job_applicants, name="job-applicants"),
+    path(
+        "jobs/applications/<int:application_id>/resume/",
+        job_views.applicant_resume,
+        name="applicant-resume",
+    ),
     path("messages/", messaging_views.inbox, name="inbox"),
     path("messages/<int:user_id>/", messaging_views.conversation, name="conversation"),
     path("notifications/", notification_views.notification_list, name="notifications"),
     path("search/", profile_views.search, name="search"),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+    path('favicon.ico', RedirectView.as_view(url=settings.STATIC_URL + 'favicon.png')),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

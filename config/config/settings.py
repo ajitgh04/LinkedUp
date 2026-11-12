@@ -83,9 +83,19 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'default2': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'linkedup',
+        'USER': 'postgres',
+        'PASSWORD': 'UxUtEKfrPacvh49x7KGd5WP0',
+        'HOST': 'linkedup-oval-knoll.sage.cloud.layerbase.dev',
+        'PORT': '5432',
+        
     }
 }
 
@@ -124,16 +134,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'config/static/'
+STATIC_URL = '/config/static/'
 
-STATIC_ROOT =   BASE_DIR / 'config/static'
+#STATIC_ROOT =   BASE_DIR / 'config/static'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 AUTH_USER_MODEL = "accounts.User"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / "config/media"
 
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "feed"

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}My applications{% endblock %}
+{% block content %}
+<div class="jobs-column">
+  <a class="back-link" href="{% url 'jobs' %}">← Back to jobs</a>
+  <section class="card jobs-intro"><div><h1>My applications</h1><p>Keep track of the roles you’ve applied for.</p></div></section>
+  {% for application in applications %}
+    <article class="card job-card">
+      <div class="job-logo">{{ application.job.company|first|upper }}</div>
+      <div class="job-details">
+        <a class="job-title" href="{% url 'jobs' %}#job-{{ application.job.id }}">{{ application.job.title }}</a>
+        <p class="job-company">{{ application.job.company }}</p>
+        <p class="job-meta">{{ application.job.location }} · Applied {{ application.applied_at|date:"M j, Y" }}</p>
+      </div>
+      <span class="applied-tag">{{ application.status|title }}</span>
+    </article>
+  {% empty %}
+    <section class="card empty-state"><h2>No applications yet</h2><p>When you apply for a role, it will appear here.</p><a class="button button-primary" href="{% url 'jobs' %}">Explore jobs</a></section>
+  {% endfor %}
+</div>
+{% endblock %}

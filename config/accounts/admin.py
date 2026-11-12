@@ -9,7 +9,16 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         (
             "Professional profile",
-            {"fields": ("profile_picture", "headline", "bio", "location", "website")},
+            {
+                "fields": (
+                    "profile_picture",
+                    "resume",
+                    "headline",
+                    "bio",
+                    "location",
+                    "website",
+                )
+            },
         ),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (

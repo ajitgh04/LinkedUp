@@ -27,7 +27,11 @@ class ProfileForm(forms.ModelForm):
             "location",
             "website",
             "profile_picture",
+            "resume",
         )
         widgets = {
             "bio": forms.Textarea(attrs={"rows": 4}),
+            "resume": forms.ClearableFileInput(
+                attrs={"accept": ".pdf,.doc,.docx"}
+            ),
         }

@@ -25,7 +25,7 @@
     <div class="section-heading"><div><h2>Make your profile yours</h2><p>Tell your story. The right people are listening.</p></div><span class="section-spark">✳</span></div>
     <form method="post" enctype="multipart/form-data" class="form-grid">{% csrf_token %}
       {% for field in form %}
-        <div class="field {% if field.name == 'bio' %}field-full{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div class="field-error">{{ field.errors }}</div>{% endif %}</div>
+        <div class="field {% if field.name == 'bio' %}field-full{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<small class="muted">{{ field.help_text }}</small>{% endif %}{% if field.errors %}<div class="field-error">{{ field.errors }}</div>{% endif %}</div>
       {% endfor %}
       <div class="field-full"><button type="submit" class="button button-primary">Save profile</button></div>
     </form>
@@ -33,6 +33,12 @@
   {% else %}
   <section class="card profile-section">
     <h2>About</h2><p class="about-copy">{{ profile_user.bio|default:"This member hasn't added an about section yet."|linebreaksbr }}</p>
+  </section>
+  {% endif %}
+  {% if is_owner and profile_user.resume %}
+  <section class="card profile-section">
+    <h2>CV / Resume</h2>
+    <p><a href="{{ profile_user.resume.url }}" download>Download CV / resume</a></p>
   </section>
   {% endif %}
   <section class="card profile-section">
